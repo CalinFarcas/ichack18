@@ -11,6 +11,6 @@ public class Scale {
   }
 
   public int getNote(int note) {
-    return notes.get(note % notes.size());
+    return 12 * (note / notes.size()) + notes.get(note % notes.size());
   }
 }

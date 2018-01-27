@@ -12,7 +12,7 @@ public class Main {
 
   public static void main(String[] args) {
     Score score = new Score();
-    Part testPart = new Part("Penis", GUITAR, 1);
+    Part testPart = new Part("Penis", PIANO, 1);
 
 
     testPart.add(PhraseGenerator.generatePhrase(8, ScaleGenerator.scale(D4, Mode.PHRYGIAN),
