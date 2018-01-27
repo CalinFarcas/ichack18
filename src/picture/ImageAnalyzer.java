@@ -9,15 +9,17 @@ public class ImageAnalyzer {
 
   private List<Zone> zones;
   private Picture image;
-  private boolean[][] visitedPixels;
+  private int[][] visitedPixels;
+  private int zoneNumber;
 
   public ImageAnalyzer(Picture image) {
     this.image = image;
     this.zones = new ArrayList<>();
-    this.visitedPixels = new boolean[image.getWidth()][image.getHeight()];
+    this.visitedPixels = new int[image.getWidth()][image.getHeight()];
   }
 
-  public Zone createZone(Coords startCoords) {
+  private Zone createZone(Coords startCoords) {
+    zoneNumber++;
     Zone zone = new Zone();
 
     int avgRed = 0;
@@ -51,7 +53,7 @@ public class ImageAnalyzer {
     return zone;
   }
 
-  private void createAllZones() {
+  public void createAllZones() {
     while (findNextUnvisited() != null) {
       zones.add(createZone(findNextUnvisited()));
     }
@@ -60,7 +62,7 @@ public class ImageAnalyzer {
   private Coords findNextUnvisited() {
     for (int i = 0; i < image.getWidth(); i++) {
       for (int j = 0; j < image.getHeight(); j++) {
-        if (!visitedPixels[i][j]) {
+        if (visitedPixels[i][j] == 0) {
           return new Coords(i, j);
         }
       }
@@ -81,20 +83,29 @@ public class ImageAnalyzer {
     // get all neighbours w similar colour
     for (int i = pixel.getX() - 1; i <= pixel.getX() + 1; i++) {
       for (int j = pixel.getY() - 1; j <= pixel.getY() + 1; j++) {
-        if (!visitedPixels[i][j]) {
-          try {
+        try {
+          if (visitedPixels[i][j] == 0) {
             pixelColor = image.getPixel(i, j);
             if (pixelColor.isSimilar(referenceColor)) {
               pixels.add(new Coords(i, j));
-              visitedPixels[i][j] = true;
+              visitedPixels[i][j] = zoneNumber;
             }
-          } catch (IndexOutOfBoundsException e) {
-            // skip
           }
+        } catch (IndexOutOfBoundsException e) {
+          // skip
         }
       }
     }
 
     return pixels;
+  }
+
+  public void printArray() {
+    for (int i = 0; i < visitedPixels[0].length; i++) {
+      for (int j = 0; j < visitedPixels.length; j++) {
+        System.out.print(visitedPixels[j][i] + " ");
+      }
+      System.out.println();
+    }
   }
 }
