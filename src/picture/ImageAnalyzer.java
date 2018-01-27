@@ -86,6 +86,7 @@ public class ImageAnalyzer {
             pixelColor = image.getPixel(i, j);
             if (pixelColor.isSimilar(referenceColor)) {
               pixels.add(new Coords(i, j));
+              visitedPixels[i][j] = true;
             }
           } catch (IndexOutOfBoundsException e) {
             // skip
