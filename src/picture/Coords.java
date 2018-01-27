@@ -26,9 +26,8 @@ public class Coords {
     this.y = y;
   }
 
-  @Override
   public boolean equals(Coords coords) {
     return this.x == coords.getX() && this.y == coords.getY();
   }
-  
+
 }

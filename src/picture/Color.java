@@ -22,6 +22,8 @@ public class Color {
    */
   private int blue;
 
+  private final static int BIAS = 50;
+
   /**
    * Default Construct. Construct a new Color object with the specified
    * intensity values for the red, green and blue components.
@@ -94,5 +96,11 @@ public class Color {
    */
   public void setBlue(int blue) {
     this.blue = blue;
+  }
+
+  public boolean isSimilar(Color pixel) {
+    return  (this.red - BIAS) <= pixel.getRed() && (this.red + BIAS) >= pixel.getRed() &&
+            (this.blue - BIAS) <= pixel.getBlue() && (this.blue + BIAS) >= pixel.getBlue() &&
+            (this.green - BIAS) <= pixel.getGreen() && (this.green + BIAS) >= pixel.getGreen();
   }
 }
