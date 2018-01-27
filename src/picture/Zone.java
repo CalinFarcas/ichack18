@@ -4,24 +4,24 @@ import java.util.*;
 
 public class Zone {
 
-  private Color avgColor;
+  private MyColor avgMyColor;
   private List<Coords> coordsList;
 
   public Zone() {
     this.coordsList = new ArrayList<>();
-    this.avgColor = new Color(0,0,0);
+    this.avgMyColor = new MyColor(0,0,0);
   }
 
-  public Color getAvgColor() {
-    return avgColor;
+  public MyColor getAvgMyColor() {
+    return avgMyColor;
   }
 
   public List<Coords> getCoordsList() {
     return coordsList;
   }
 
-  public void setAvgColor(Color avgColor) {
-    this.avgColor = avgColor;
+  public void setAvgMyColor(MyColor avgMyColor) {
+    this.avgMyColor = avgMyColor;
   }
 
   public void add(Coords coords) {

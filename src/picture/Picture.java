@@ -65,14 +65,14 @@ public class Picture {
    *           if the specified pixel-location is not contained within the
    *           boundaries of this picture.
    */
-  public Color getPixel(int x, int y) {
+  public MyColor getPixel(int x, int y) {
     int rgb = image.getRGB(x, y);
-    return new Color((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
+    return new MyColor((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
   }
 
-  public Color getPixel(Coords coords) {
+  public MyColor getPixel(Coords coords) {
     int rgb = image.getRGB(coords.getX(), coords.getY());
-    return new Color((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
+    return new MyColor((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
   }
 
   /**
@@ -88,13 +88,13 @@ public class Picture {
    *           if the specified pixel-location is not contained within the
    *           boundaries of this picture.
    */
-  public void setPixel(int x, int y, Color rgb) {
+  public void setPixel(int x, int y, MyColor rgb) {
 
     image.setRGB(x, y, 0xff000000 | (((0xff & rgb.getRed()) << 16)
             | ((0xff & rgb.getGreen()) << 8) | (0xff & rgb.getBlue())));
   }
 
-  public void setPixel(Coords coords, Color rgb) {
+  public void setPixel(Coords coords, MyColor rgb) {
 
     image.setRGB(coords.getX(), coords.getY(), 0xff000000 | (((0xff & rgb.getRed()) << 16)
             | ((0xff & rgb.getGreen()) << 8) | (0xff & rgb.getBlue())));
