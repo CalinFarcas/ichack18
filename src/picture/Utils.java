@@ -1,7 +1,6 @@
 package picture;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 /**
  * A set of convenient methods to create and display Picture objects.
@@ -108,7 +100,7 @@ public class Utils {
 
     for (int y = 0; y < picture.getHeight(); y++) {
       for (int x = 0; x < picture.getWidth(); x++) {
-        Color rgb = picture.getPixel(x, y);
+        MyColor rgb = picture.getPixel(x, y);
         sb.append("(");
         sb.append(rgb.getRed());
         sb.append(",");

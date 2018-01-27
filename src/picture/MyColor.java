@@ -1,11 +1,13 @@
 package picture;
 
+import java.awt.*;
+
 /**
  * Encapsulate the colours using the RGB direct color-model. The individual red,
  * green and blue components of a colour are assigned a value ranging from 0 to
  * 255. A component value of 0 signifies no contribution is made to the color.
  */
-public class Color {
+public class MyColor {
 
   /**
    * the intensity of the red component
@@ -22,27 +24,27 @@ public class Color {
    */
   private int blue;
 
-  private final static int BIAS = 50;
+  private final static float BIAS = 0.1F;
 
   /**
-   * Default Construct. Construct a new Color object with the specified
+   * Default Construct. Construct a new MyColor object with the specified
    * intensity values for the red, green and blue components.
    *
    * @param red
-   *          the intensity of the red component contributed to this Color.
+   *          the intensity of the red component contributed to this MyColor.
    * @param green
-   *          the intensity of the green component contributed to this Color.
+   *          the intensity of the green component contributed to this MyColor.
    * @param blue
-   *          the intensity of the blue component contributed to this Color.
+   *          the intensity of the blue component contributed to this MyColor.
    */
-  public Color(int red, int green, int blue) {
+  public MyColor(int red, int green, int blue) {
     this.red = red;
     this.green = green;
     this.blue = blue;
   }
 
   /**
-   * Return the contribution of the red component to <tt>this</tt> Color.
+   * Return the contribution of the red component to <tt>this</tt> MyColor.
    *
    * @return the intensity of the red component.
    */
@@ -51,7 +53,7 @@ public class Color {
   }
 
   /**
-   * Return the contribution of the green component to <tt>this</tt> Color.
+   * Return the contribution of the green component to <tt>this</tt> MyColor.
    *
    * @return the intensity of the green component.
    */
@@ -60,7 +62,7 @@ public class Color {
   }
 
   /**
-   * Return the contribution of the blue component to <tt>this</tt> Color.
+   * Return the contribution of the blue component to <tt>this</tt> MyColor.
    *
    * @return the intensity of the blue component.
    */
@@ -69,7 +71,7 @@ public class Color {
   }
 
   /**
-   * Set the contribution of the red component to <tt>this</tt> Color.
+   * Set the contribution of the red component to <tt>this</tt> MyColor.
    *
    * @param red
    *          the new intensity value of the red component.
@@ -79,7 +81,7 @@ public class Color {
   }
 
   /**
-   * Set the contribution of the green component to <tt>this</tt> Color.
+   * Set the contribution of the green component to <tt>this</tt> MyColor.
    *
    * @param green
    *          the new intensity value of the green component.
@@ -89,7 +91,7 @@ public class Color {
   }
 
   /**
-   * Set the contribution of the blue component to <tt>this</tt> Color.
+   * Set the contribution of the blue component to <tt>this</tt> MyColor.
    *
    * @param blue
    *          the new intensity value of the blue component.
@@ -98,9 +100,16 @@ public class Color {
     this.blue = blue;
   }
 
-  public boolean isSimilar(Color pixel) {
+  public boolean isSimilarRGB(MyColor pixel) {
     return  (this.red - BIAS) <= pixel.getRed() && (this.red + BIAS) >= pixel.getRed() &&
             (this.blue - BIAS) <= pixel.getBlue() && (this.blue + BIAS) >= pixel.getBlue() &&
             (this.green - BIAS) <= pixel.getGreen() && (this.green + BIAS) >= pixel.getGreen();
+  }
+
+  public boolean isSimilar(MyColor pixel) {
+    float[] thisHSV = Color.RGBtoHSB(red, green, blue, null);
+    float[] pixelHSV = Color.RGBtoHSB(pixel.getRed(), pixel.getGreen(), pixel.getBlue(), null);
+
+    return Math.abs(thisHSV[0] - pixelHSV[0]) <= BIAS;
   }
 }

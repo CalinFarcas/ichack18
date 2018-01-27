@@ -1,5 +1,6 @@
 package picture;
 
+import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -21,6 +22,7 @@ public class ImageAnalyzer {
   private Zone createZone(Coords startCoords) {
     zoneNumber++;
     Zone zone = new Zone();
+    MyColor color = image.getPixel(startCoords);
 
     int avgRed = 0;
     int avgBlue = 0;
@@ -32,7 +34,7 @@ public class ImageAnalyzer {
 
     // bfs
     while (queue.size() > 0) {
-      List<Coords> alikePixels = getAlikePixels(queue.pop()); // gets only unvisited
+      List<Coords> alikePixels = getAlikePixels(color, queue.pop()); // gets only unvisited
 
       for (Coords alikePixel : alikePixels) {
         // add to zone and color avg totals
@@ -47,7 +49,7 @@ public class ImageAnalyzer {
     }
 
     if (pixelNo > 0) {
-      zone.setAvgColor(new Color(avgRed / pixelNo, avgGreen / pixelNo, avgBlue / pixelNo));
+      zone.setAvgMyColor(new MyColor(avgRed / pixelNo, avgGreen / pixelNo, avgBlue / pixelNo));
     }
 
     return zone;
@@ -75,18 +77,17 @@ public class ImageAnalyzer {
   }
 
   // only gets alike pixels that arent visited!!!!!!
-  private List<Coords> getAlikePixels(Coords pixel) {
+  private List<Coords> getAlikePixels(MyColor color, Coords pixel) {
     List<Coords> pixels = new ArrayList<>();
-    Color pixelColor;
-    Color referenceColor = image.getPixel(pixel);
+    MyColor pixelMyColor;
 
     // get all neighbours w similar colour
     for (int i = pixel.getX() - 1; i <= pixel.getX() + 1; i++) {
       for (int j = pixel.getY() - 1; j <= pixel.getY() + 1; j++) {
         try {
           if (visitedPixels[i][j] == 0) {
-            pixelColor = image.getPixel(i, j);
-            if (pixelColor.isSimilar(referenceColor)) {
+            pixelMyColor = image.getPixel(i, j);
+            if (pixelMyColor.isSimilar(color)) {
               pixels.add(new Coords(i, j));
               visitedPixels[i][j] = zoneNumber;
             }
