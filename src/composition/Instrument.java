@@ -15,7 +15,7 @@ public abstract class Instrument {
   private Mode mode;
   private static int channel = 0;
 
-  protected Instrument(int instrument, int baseNote, Mode mode) {
+  protected Instrument(int instrument) {
     this.instrument = instrument;
   }
 
