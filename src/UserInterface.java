@@ -4,7 +4,7 @@ import java.awt.event.ActionListener;
 
 import static picture.PictureProcessing.saveZones;;
 
-public class TestGui extends JFrame{
+public class UserInterface extends JFrame{
   private JTextField pasteSourcePathOrTextField;
   private JButton generateColourZonesButton;
   private JPanel panel;
@@ -23,9 +23,9 @@ public class TestGui extends JFrame{
     }
   }
 
-  public TestGui() {
-    setTitle("test");
-    setSize(500, 300);
+  public UserInterface() {
+    setTitle("PICTURE THEMESONG GENERATOR!!!");
+    setSize(500, 200);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.panel = new JPanel();
     getContentPane().add(panel);
@@ -41,6 +41,6 @@ public class TestGui extends JFrame{
   }
 
   public static void main(String[] args) {
-    TestGui app = new TestGui();
+    UserInterface app = new UserInterface();
   }
 }
