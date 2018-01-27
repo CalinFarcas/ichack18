@@ -70,6 +70,11 @@ public class Picture {
     return new Color((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
   }
 
+  public Color getPixel(Coords coords) {
+    int rgb = image.getRGB(coords.getX(), coords.getY());
+    return new Color((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff);
+  }
+
   /**
    * Update the pixel-value at the specified location.
    *
@@ -86,6 +91,12 @@ public class Picture {
   public void setPixel(int x, int y, Color rgb) {
 
     image.setRGB(x, y, 0xff000000 | (((0xff & rgb.getRed()) << 16)
+            | ((0xff & rgb.getGreen()) << 8) | (0xff & rgb.getBlue())));
+  }
+
+  public void setPixel(Coords coords, Color rgb) {
+
+    image.setRGB(coords.getX(), coords.getY(), 0xff000000 | (((0xff & rgb.getRed()) << 16)
             | ((0xff & rgb.getGreen()) << 8) | (0xff & rgb.getBlue())));
   }
 
