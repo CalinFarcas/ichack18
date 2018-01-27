@@ -9,10 +9,12 @@ public class ImageAnalyzer {
 
   private List<Zone> zones;
   private Picture image;
+  private boolean[][] visitedPixels;
 
   public ImageAnalyzer(Picture image) {
     this.image = image;
-    zones = new ArrayList<>();
+    this.zones = new ArrayList<>();
+    this.visitedPixels = new boolean[image.getWidth()][image.getHeight()];
   }
 
   public Zone createZone(Coords startCoords) {
@@ -28,19 +30,15 @@ public class ImageAnalyzer {
 
     // bfs
     while (queue.size() > 0) {
-      List<Coords> alikePixels = getAlikePixels(queue.pop());
+      List<Coords> alikePixels = getAlikePixels(queue.pop()); // gets only unvisited
 
       for (Coords alikePixel : alikePixels) {
-        // remove already visited
-        if (queue.contains(alikePixel) || zone.getCoordsList().contains(alikePixel)) {
-          alikePixels.remove(alikePixel);
-        } else { // add to zone and color avg totals
+        // add to zone and color avg totals
           zone.add(alikePixel);
           avgRed += image.getPixel(alikePixel).getRed();
           avgBlue += image.getPixel(alikePixel).getBlue();
           avgGreen += image.getPixel(alikePixel).getGreen();
           pixelNo++;
-        }
       }
 
       queue.addAll(alikePixels);
@@ -53,9 +51,28 @@ public class ImageAnalyzer {
     return zone;
   }
 
-  //bfs pe toata imaginea TODO
+  private void createAllZones() {
+    while (findNextUnvisited() != null) {
+      zones.add(createZone(findNextUnvisited()));
+    }
+  }
 
+  private Coords findNextUnvisited() {
+    for (int i = 0; i < image.getWidth(); i++) {
+      for (int j = 0; j < image.getHeight(); j++) {
+        if (!visitedPixels[i][j]) {
+          return new Coords(i, j);
+        }
+      }
+    }
+    return null;
+  }
 
+  public List<Zone> getZones() {
+    return zones;
+  }
+
+  // only gets alike pixels that arent visited!!!!!!
   private List<Coords> getAlikePixels(Coords pixel) {
     List<Coords> pixels = new ArrayList<>();
     Color pixelColor;
@@ -64,13 +81,15 @@ public class ImageAnalyzer {
     // get all neighbours w similar colour
     for (int i = pixel.getX() - 1; i <= pixel.getX() + 1; i++) {
       for (int j = pixel.getY() - 1; j <= pixel.getY() + 1; j++) {
-        try {
-          pixelColor = image.getPixel(i, j);
-          if (pixelColor.isSimilar(referenceColor)) {
-            pixels.add(new Coords(i, j));
+        if (!visitedPixels[i][j]) {
+          try {
+            pixelColor = image.getPixel(i, j);
+            if (pixelColor.isSimilar(referenceColor)) {
+              pixels.add(new Coords(i, j));
+            }
+          } catch (IndexOutOfBoundsException e) {
+            // skip
           }
-        } catch (IndexOutOfBoundsException e) {
-          // skip
         }
       }
     }
