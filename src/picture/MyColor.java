@@ -110,6 +110,6 @@ public class MyColor {
     float[] thisHSV = Color.RGBtoHSB(red, green, blue, null);
     float[] pixelHSV = Color.RGBtoHSB(pixel.getRed(), pixel.getGreen(), pixel.getBlue(), null);
 
-    return Math.abs(thisHSV[0] - pixelHSV[0]) <= BIAS;
+    return Math.abs(thisHSV[0] - pixelHSV[0]) <= BIAS && Math.abs(thisHSV[2] - pixelHSV[2]) <= BIAS + 0.3;
   }
 }

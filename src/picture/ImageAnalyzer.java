@@ -1,6 +1,5 @@
 package picture;
 
-import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -56,20 +55,13 @@ public class ImageAnalyzer {
   }
 
   public void createAllZones() {
-    while (findNextUnvisited() != null) {
-      zones.add(createZone(findNextUnvisited()));
-    }
-  }
-
-  private Coords findNextUnvisited() {
     for (int i = 0; i < image.getWidth(); i++) {
       for (int j = 0; j < image.getHeight(); j++) {
         if (visitedPixels[i][j] == 0) {
-          return new Coords(i, j);
+          zones.add(createZone(new Coords(i, j)));
         }
       }
     }
-    return null;
   }
 
   public List<Zone> getZones() {
