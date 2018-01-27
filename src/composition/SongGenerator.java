@@ -13,6 +13,8 @@ public class SongGenerator {
   private boolean isBass;
   private boolean isSax;
   private boolean isDrums;
+  private int baseNote;
+  private Mode mode;
 
   public SongGenerator() {
     speed = 120;
@@ -22,23 +24,28 @@ public class SongGenerator {
     drumMachine = new DrumMachine();
   }
 
-  public void initGeneralParameters(double speed) {
+  public void initGeneralParameters(double speed, int baseNote, Mode mode) {
     this.speed = speed;
+    this.baseNote = baseNote;
+    this.mode = mode;
   }
 
   public void initGuitar(int numNotes, int[] pitches, double[] lengths, double volume) {
     isGuitar = true;
     guitarInstrument.setParameters(numNotes, pitches, lengths, volume);
+    guitarInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
   public void initBass(int numNotes, int[] pitches, double[] lengths, double volume) {
     isBass = true;
     bassInstrument.setParameters(numNotes, pitches, lengths, volume);
+    bassInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
   public void initSax(int numNotes, int[] pitches, double[] lengths, double volume) {
     isSax = true;
     saxInstrument.setParameters(numNotes, pitches, lengths, volume);
+    saxInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
   public void initDrums() {
@@ -47,6 +54,7 @@ public class SongGenerator {
 
   public Score generateSong() {
     Score score = new Score();
+    score.setTempo(speed * 200);
 
     if (isDrums) {
       drumMachine.addPartToScore(score);
