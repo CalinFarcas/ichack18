@@ -18,6 +18,14 @@ public abstract class Instrument {
   protected Mode mode;
   protected static int channel = 0;
 
+  protected double totalLength() {
+    double sum = 0;
+    for (double length : lengths) {
+      sum += length;
+    }
+    return sum;
+  }
+
   protected Instrument(int instrument) {
     this.instrument = instrument;
   }

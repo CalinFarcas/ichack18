@@ -17,7 +17,7 @@ public class BassInstrument extends Instrument {
   public void addPartToScore(Score score, double duration) {
     Part part = new Part("Bass", instrument, channel++);
     Phrase phrase = PhraseGenerator.generatePhrase(numNotes,
-        ScaleGenerator.scale(baseNote, mode), pitches, lengths, (int) (duration / 4));
+        ScaleGenerator.scale(baseNote, mode), pitches, lengths, (int) (duration / totalLength()));
 
     Mod.transpose(phrase, -36);
 

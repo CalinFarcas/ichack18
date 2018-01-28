@@ -4,14 +4,18 @@ import jm.music.data.CPhrase;
 import jm.music.data.Phrase;
 import jm.music.tools.Mod;
 
+import static jm.constants.Pitches.REST;
+
 public class PhraseGenerator {
 
   public static Phrase generatePhrase(int numNotes, Scale scale, int[] degrees, double[] lengths, int repetitions) {
     int[] pitches = new int[numNotes];
 
-    for (int i = 0; i < numNotes; i++) {
+    for (int i = 0; i < numNotes - 1; i++) {
       pitches[i] = scale.getNote(degrees[i]);
     }
+
+    pitches[numNotes - 1] = REST;
 
     Phrase result = new Phrase();
     result.addNoteList(pitches, lengths);

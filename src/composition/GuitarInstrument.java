@@ -5,8 +5,6 @@ import jm.music.data.Part;
 import jm.music.data.Score;
 import jm.music.tools.Mod;
 
-import static jm.constants.ProgramChanges.GUITAR;
-
 public class GuitarInstrument extends Instrument {
 
   public GuitarInstrument(int instrument) {
@@ -21,7 +19,7 @@ public class GuitarInstrument extends Instrument {
 
     part.addCPhrase(phrase);
     part.setDynamic(40 + (int) (volume * 20));
-    Mod.repeat(part, (int) (duration / 4));
+    Mod.repeat(part, (int) (duration / totalLength()));
     score.addPart(part);
   }
 }

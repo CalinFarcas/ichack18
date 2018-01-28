@@ -56,7 +56,7 @@ public class ImageAnalyzer {
     avgSat /= nrPixels;
     double mod = sqrt(cbrt((double) (nrHue * nrSat * nrLight))/ (double) nrPixels);
     System.out.println(mod);
-    songGenerator.initGeneralParameters((int)avgSat*11 + 60, Mode.values()[Math.min(6, (int)(mod*8))]);
+    songGenerator.initGeneralParameters((int)avgSat*11 + 60, Mode.values()[Math.min(6, (int)(mod*7))]);
   }
 
   private Zone createZone(Coords startCoords) {
@@ -172,7 +172,7 @@ public class ImageAnalyzer {
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
-        speed = (hsb[1] + hsb[2]) / 2;
+        speed = Math.max((hsb[1] + hsb[2]) / 2, 0.3);
         if (hsb[2] < 0.6F) {
           drumSize = zones.get(i).size();
           zonez[0] = zones.get(i);
@@ -183,7 +183,6 @@ public class ImageAnalyzer {
 
     ++i;
 
-    int bassNrNotes = 0;
     int[] bassPitches = null;
     double[] bassLength = null;
     int bassSize = 0;
@@ -195,37 +194,8 @@ public class ImageAnalyzer {
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
-        bassNrNotes = (int)(hsb[2]*4) + 1;
-        double val = (double) hsb[0] * (double) hsb[1];
-        switch (bassNrNotes) {
-          case 1:
-            bassPitches = new int[1];
-            bassPitches[0] = (int)Math.floor(val*8);
-            bassLength = new double[]{8};
-            break;
-          case 2:
-            bassPitches = new int[2];
-            bassPitches[0] = (int)Math.floor(val*8);
-            bassPitches[1] = (int)Math.floor(val*8*8)%8;
-            bassLength = new double[]{4,4};
-
-            break;
-          case 3:
-            bassPitches = new int[3];
-            bassPitches[0] = (int)Math.floor(val*8);
-            bassPitches[1] = (int)Math.floor(val*8*8)%8;
-            bassPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            bassLength = new double[]{3,3,2};
-
-            break;
-          default:
-            bassPitches = new int[4];
-            bassPitches[0] = (int)Math.floor(val*8);
-            bassPitches[1] = (int)Math.floor(val*8*8)%8;
-            bassPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            bassPitches[3] = (int)Math.floor(val*8*8*8*8)%8;
-            bassLength = new double[]{2,2,2,2};
-        }
+        bassPitches = generate_pitches(hsb[0], 8);
+        bassLength = generate_lengths(bassPitches.length, hsb[1] * hsb[2]);
         break;
       }
     }
@@ -233,7 +203,6 @@ public class ImageAnalyzer {
     ++i;
     int[] guitarPitches = null;
     double[] guitarLength = null;
-    int guitarNrNotes = 0;
     int guitarSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
@@ -243,53 +212,8 @@ public class ImageAnalyzer {
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
-        int caz = (int)(hsb[2] *6);
-        double val = (double) hsb[0] * (double) hsb[1];
-
-        switch (caz) {
-          case 0:
-            guitarNrNotes = 1;
-            guitarPitches = new int[1];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarLength = new double[]{4};
-            break;
-          case 1:
-            guitarNrNotes = 2;
-            guitarPitches = new int[2];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarPitches[1] = (int)Math.floor(val*8*8)%8;
-            guitarLength = new double[]{2,2};
-            break;
-          case 2:
-            guitarNrNotes = 3;
-            guitarPitches = new int[3];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarPitches[1] = (int)Math.floor(val*8*8)%8;
-            guitarPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            guitarLength = new double[]{2,1,1};
-            break;
-          case 3:
-            guitarNrNotes = 1;
-            guitarPitches = new int[1];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarLength = new double[]{8};
-            break;
-          case 4:
-            guitarNrNotes = 2;
-            guitarPitches = new int[2];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarPitches[1] = (int)Math.floor(val*8*8)%8;
-            guitarLength = new double[]{4,4};
-            break;
-          default:
-            guitarNrNotes = 3;
-            guitarPitches = new int[3];
-            guitarPitches[0] = (int)Math.floor(val*8);
-            guitarPitches[1] = (int)Math.floor(val*8*8)%8;
-            guitarPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            guitarLength = new double[]{3,3,2};
-            break;
-        }
+        guitarPitches = generate_pitches(hsb[0], 10);
+        guitarLength = generate_lengths(guitarPitches.length, hsb[1] * hsb[2]);
         break;
       }
     }
@@ -297,7 +221,6 @@ public class ImageAnalyzer {
     i++;
     int[] saxPitches = null;
     double[] saxLength = null;
-    int saxNrNotes = 0;
     int saxSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size()>= MIN_ZONE_SIZE) {
@@ -307,53 +230,8 @@ public class ImageAnalyzer {
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
-        saxNrNotes = (int) (hsb[2]*4 + 5);
-        double val = (double) hsb[0] * (double) hsb[1];
-
-        switch (saxNrNotes) {
-          case 5:
-            saxPitches = new int[5];
-            saxPitches[0] = (int)Math.floor(val*8);
-            saxPitches[1] = (int)Math.floor(val*8*8)%8;
-            saxPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            saxPitches[3] = (int)Math.floor(val*8*8*8*8)%8;
-            saxPitches[4] = (int)Math.floor(val*8*8*8*8*8)%8;
-            saxLength = new double[]{1,2,1,1,2};
-            break;
-          case 6:
-            saxPitches = new int[6];
-            saxPitches[0] = (int)Math.floor(val*8);
-            saxPitches[1] = (int)Math.floor(val*8*8)%8;
-            saxPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            saxPitches[3] = (int)Math.floor(val*8*8*8*8)%8;
-            saxPitches[4] = (int)Math.floor(val*8*8*8*8*8)%8;
-            saxPitches[5] = (int)Math.floor(val*8*8*8*8*8*8)%8;
-            saxLength = new double[]{1,2,1,1,2,1};
-            break;
-          case 7:
-            saxPitches = new int[7];
-            saxPitches[0] = (int)Math.floor(val*8);
-            saxPitches[1] = (int)Math.floor(val*8*8)%8;
-            saxPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            saxPitches[3] = (int)Math.floor(val*8*8*8*8)%8;
-            saxPitches[4] = (int)Math.floor(val*8*8*8*8*8)%8;
-            saxPitches[5] = (int)Math.floor(val*8*8*8*8*8*8)%8;
-            saxPitches[6] = (int)Math.floor(val*8*8*8*8*8*8*8)%8;
-            saxLength = new double[]{1,1,1,1,1,2,1};
-            break;
-          default:
-            saxPitches = new int[8];
-            saxPitches[0] = (int)Math.floor(val*8);
-            saxPitches[1] = (int)Math.floor(val*8*8)%8;
-            saxPitches[2] = (int)Math.floor(val*8*8*8)%8;
-            saxPitches[3] = (int)Math.floor(val*8*8*8*8)%8;
-            saxPitches[4] = (int)Math.floor(val*8*8*8*8*8)%8;
-            saxPitches[5] = (int)Math.floor(val*8*8*8*8*8*8)%8;
-            saxPitches[6] = (int)Math.floor(val*8*8*8*8*8*8*8)%8;
-            saxPitches[7] = (int)Math.floor(val*8*8*8*8*8*8*8*8)%8;
-            saxLength = new double[]{1,1,1,1,1,1,1,1};
-            break;
-        }
+        saxPitches = generate_pitches(hsb[0], 16);
+        saxLength = generate_lengths(saxPitches.length, hsb[1] * hsb[2]);
         break;
       }
     }
@@ -391,27 +269,89 @@ public class ImageAnalyzer {
         }
       }
 
-      songGenerator.initDrums(speed, whereKick, whereSnare, whereHats);
+      songGenerator.initDrums(speed, (double)drumSize/maxSize, whereKick, whereSnare, whereHats);
     } else {
       songGenerator.setSpeed(speed);
     }
 
     if(bassSize != 0) {
-      songGenerator.initBass(bassNrNotes,bassPitches,bassLength,(double)bassSize/maxSize, zoneToInstrument(zonez[1]));
+      songGenerator.initBass(bassPitches.length,bassPitches,bassLength,(double)bassSize/maxSize, zoneToBass(zonez[1]));
     }
 
     if(guitarSize != 0) {
-      songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize, zoneToInstrument(zonez[2]));
+      songGenerator.initGuitar(guitarPitches.length,guitarPitches,guitarLength,(double)guitarSize/maxSize, zoneToGuitar(zonez[2]));
     }
 
     if(saxSize != 0) {
-      songGenerator.initSax(saxNrNotes,saxPitches,saxLength,(double)saxSize/maxSize, zoneToInstrument(zonez[3]));
+      songGenerator.initSax(saxPitches.length,saxPitches,saxLength,(double)saxSize/maxSize, zoneToSax(zonez[3]));
     }
+  }
+
+  private int[] generate_pitches(float x, int minimum) {
+    long seed = (long) Math.floor(x * Math.pow(2, 60));
+    int numNotes = Math.max((int) (seed % 20 + 1), minimum);
+
+    int[] pitches = new int[numNotes];
+
+    for (int i = 0; i < numNotes; i++) {
+      pitches[i] = (int) (seed % 8);
+      seed /= 7;
+    }
+
+    return pitches;
+  }
+
+  private double[] generate_lengths(int n, float x) {
+    long seed = (long) Math.floor(x * Math.pow(2, 60));
+    double[] lengths = new double[n];
+    double sum = 0;
+    for (int i = 0; i < n - 1; i++) {
+      lengths[i] = ((seed % 31 + 1) / 8.0);
+      sum += lengths[i];
+      seed /= 7;
+    }
+    int roundToMul8 = (int) Math.ceil(sum);
+    while(roundToMul8 % 8 != 0 || roundToMul8 == 0) {
+      ++roundToMul8;
+    }
+
+    lengths[n - 1] = roundToMul8 - sum;
+
+    return lengths;
   }
 
   private int zoneToInstrument(Zone zone) {
     MyColor avgCol = zone.getAvgMyColor();
-    return (int) (Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0] * 127);
+    float ket = Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0];
+    ket *= 128;
+    return (int) Math.floor(ket);
+  }
+
+  private int zoneToBass(Zone zone) {
+    MyColor avgCol =  zone.getAvgMyColor();
+    float hue = Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0];
+    int[] bassInstruments = new int[]{32, 33, 34, 35, 36, 37, 38, 39};
+    return bassInstruments[(int) (hue * bassInstruments.length)];
+  }
+
+  private int zoneToGuitar(Zone zone) {
+    MyColor avgCol =  zone.getAvgMyColor();
+    float hue = Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0];
+    int[] guitarInstruments = new int[20];
+    for (int i = 0; i < 20; i++) {
+      guitarInstruments[i] = i + 48;
+    }
+    return guitarInstruments[(int) (hue * guitarInstruments.length)];
+  }
+
+  private int zoneToSax(Zone zone) {
+    MyColor avgCol =  zone.getAvgMyColor();
+    float hue = Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0];
+    int[] saxInstruments = new int[32];
+    for (int i = 0; i < 32; i++) {
+      saxInstruments[i] = i;
+    }
+    return saxInstruments[(int) (hue * saxInstruments.length)];
   }
 
   public void printArray() {

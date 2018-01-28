@@ -3,6 +3,7 @@ package picture;
 import composition.SongGenerator;
 import jm.music.data.Score;
 import jm.util.Play;
+import jm.util.Write;
 
 import static picture.Utils.createPicture;
 import static picture.Utils.loadPicture;
@@ -23,7 +24,8 @@ public class PictureProcessing {
       analyzer.initGlobalVariants(songGenerator);
       analyzer.initInstruments(songGenerator);
 
-      Score score = songGenerator.generateSong(24);
+      Score score = songGenerator.generateSong(128);
+      Write.midi(score);
       Play.midi(score);
       Picture savedPicture = createPicture(picture.getWidth(), picture.getHeight());
 

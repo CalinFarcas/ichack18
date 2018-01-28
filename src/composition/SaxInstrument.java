@@ -17,7 +17,7 @@ public class SaxInstrument extends Instrument {
   public void addPartToScore(Score score, double duration) {
     Part part = new Part("Sax", instrument, channel++);
     Phrase phrase = PhraseGenerator.generatePhrase(numNotes,
-        ScaleGenerator.scale(baseNote, mode), pitches, lengths, (int) (duration / 4));
+        ScaleGenerator.scale(baseNote, mode), pitches, lengths, (int) (duration / totalLength()));
 
 
     part.addPhrase(phrase);

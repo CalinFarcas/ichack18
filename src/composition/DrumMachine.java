@@ -13,6 +13,7 @@ public class DrumMachine {
   private boolean[] whereKick;
   private boolean[] whereSnare;
   private boolean[] whereHats;
+  private double volume;
 
   public void addPartToScore(Score score, double duration) {
     // drums
@@ -54,6 +55,10 @@ public class DrumMachine {
     snarePart.addPhrase(snarePhrase);
     hatsPart.addPhrase(hatsPhrase);
 
+    kickPart.setDynamic(40 + (int) (volume * 20));
+    snarePart.setDynamic(40 + (int) (volume * 20));
+    hatsPart.setDynamic(40 + (int) (volume * 20));
+
     Mod.repeat(kickPart, (int) (duration / 12));
     Mod.repeat(snarePart, (int) (duration / 12));
     Mod.repeat(hatsPart, (int) (duration / 12));
@@ -63,9 +68,10 @@ public class DrumMachine {
     score.addPart(hatsPart);
   }
 
-  public void setBeat(boolean[] whereKick, boolean[] whereSnare, boolean[] whereHats) {
+  public void setBeat(boolean[] whereKick, boolean[] whereSnare, boolean[] whereHats, double volume) {
     this.whereKick = whereKick;
     this.whereSnare = whereSnare;
     this.whereHats = whereHats;
+    this.volume = volume;
   }
 }
