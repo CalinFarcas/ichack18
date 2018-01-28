@@ -19,4 +19,5 @@ public enum Mode {
   public int[] getIntervals() {
     return intervals;
   }
+
 }

@@ -1,5 +1,9 @@
 package picture;
 
+import composition.SongGenerator;
+import jm.music.data.Score;
+import jm.util.Play;
+
 import static picture.Utils.createPicture;
 import static picture.Utils.loadPicture;
 import static picture.Utils.savePicture;
@@ -13,6 +17,12 @@ public class PictureProcessing {
     ImageAnalyzer analyzer = new ImageAnalyzer(picture);
 
     analyzer.createAllZones();
+    SongGenerator songGenerator = new SongGenerator();
+    analyzer.initGlobalVariants(songGenerator);
+    analyzer.initInstruments(songGenerator);
+
+    Score score = songGenerator.generateSong();
+    Play.midi(score);
 
     Picture savedPicture = createPicture(picture.getWidth(), picture.getHeight());
 

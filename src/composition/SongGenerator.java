@@ -24,8 +24,7 @@ public class SongGenerator {
     drumMachine = new DrumMachine();
   }
 
-  public void initGeneralParameters(double speed, int baseNote, Mode mode) {
-    this.speed = speed;
+  public void initGeneralParameters(int baseNote, Mode mode) {
     this.baseNote = baseNote;
     this.mode = mode;
   }
@@ -48,13 +47,14 @@ public class SongGenerator {
     saxInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
-  public void initDrums() {
+  public void initDrums(double speed, double volume) {
     isDrums = true;
+    this.speed = speed;
   }
 
   public Score generateSong() {
     Score score = new Score();
-    score.setTempo(speed * 200);
+    score.setTempo(speed * 400);
 
     if (isDrums) {
       drumMachine.addPartToScore(score);

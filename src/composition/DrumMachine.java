@@ -44,9 +44,9 @@ public class DrumMachine {
     snarePart.addPhrase(snarePhrase);
     hatsPart.addPhrase(hatsPhrase);
 
-    Mod.repeat(kickPart, 4);
-    Mod.repeat(snarePart, 4);
-    Mod.repeat(hatsPart, 4);
+    Mod.repeat(kickPart, 16);
+    Mod.repeat(snarePart, 16);
+    Mod.repeat(hatsPart, 16);
 
     score.addPart(kickPart);
     score.addPart(snarePart);
