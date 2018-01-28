@@ -48,9 +48,10 @@ public class SongGenerator {
     saxInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
-  public void initDrums(double speed, double volume) {
+  public void initDrums(double speed, boolean[] whereKick, boolean[] whereSnare, boolean[] whereHats) {
     isDrums = true;
     this.speed = speed;
+    drumMachine.setBeat(whereKick, whereSnare, whereHats);
   }
 
   public void setSpeed(double newSpeed) {

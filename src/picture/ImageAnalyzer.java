@@ -162,7 +162,7 @@ public class ImageAnalyzer {
   }
 
   public void initInstruments(SongGenerator songGenerator) {
-    List<Zone> zonez = new ArrayList<>();
+    Zone[] zonez = new Zone[4];
     zones.sort((x, y) -> (int) (y.getConsistency() - x.getConsistency()));
     int i = 0;
     double speed = 0;
@@ -173,9 +173,9 @@ public class ImageAnalyzer {
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
         speed = (hsb[1] + hsb[2]) / 2;
-
         if (hsb[2] < 0.6F) {
           drumSize = zones.get(i).size();
+          zonez[0] = zones.get(i);
         }
         break;
       }
@@ -189,7 +189,7 @@ public class ImageAnalyzer {
     int bassSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
-        zonez.add(zones.get(i));
+        zonez[1] = zones.get(i);
 
         bassSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
@@ -237,7 +237,7 @@ public class ImageAnalyzer {
     int guitarSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
-        zonez.add(zones.get(i));
+        zonez[2] = zones.get(i);
 
         guitarSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
@@ -301,7 +301,7 @@ public class ImageAnalyzer {
     int saxSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size()>= MIN_ZONE_SIZE) {
-        zonez.add(zones.get(i));
+        zonez[3] = zones.get(i);
 
         saxSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
@@ -360,21 +360,52 @@ public class ImageAnalyzer {
 
     int maxSize = max(max(drumSize,bassSize),max(guitarSize,saxSize));
     if(drumSize != 0) {
-      songGenerator.initDrums(speed, (double) drumSize/maxSize);
+      Zone drumZone = zonez[0];
+
+      float[] hsb = Color.RGBtoHSB(drumZone.getAvgMyColor().getRed(), drumZone.getAvgMyColor().getGreen(), drumZone.getAvgMyColor().getBlue(), null);
+
+      boolean[] whereKick = new boolean[24];
+      boolean[] whereSnare = new boolean[24];
+      boolean[] whereHats = new boolean[24];
+
+      long pula1 = (long) Math.floor((hsb[0] * Math.pow(2, 36)));
+      long pula2 = (long) Math.floor((hsb[1] * Math.pow(2, 36)));
+      long pula3 = (long) Math.floor((hsb[2] * Math.pow(2, 36)));
+
+
+      for (int j = 36; j > 12; j--) {
+        if (((1L << j) & pula1) != 0) {
+          whereKick[36 - j] = true;
+        }
+      }
+
+      for (int j = 36; j > 12; j--) {
+        if (((1L << j) & pula2) != 0) {
+          whereSnare[36 - j] = true;
+        }
+      }
+
+      for (int j = 36; j > 12; j--) {
+        if (((1L << j) & pula3) != 0) {
+          whereHats[36 - j] = true;
+        }
+      }
+
+      songGenerator.initDrums(speed, whereKick, whereSnare, whereHats);
     } else {
       songGenerator.setSpeed(speed);
     }
 
     if(bassSize != 0) {
-      songGenerator.initBass(bassNrNotes,bassPitches,bassLength,(double)bassSize/maxSize, zoneToInstrument(zonez.get(0)));
+      songGenerator.initBass(bassNrNotes,bassPitches,bassLength,(double)bassSize/maxSize, zoneToInstrument(zonez[1]));
     }
 
     if(guitarSize != 0) {
-      songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize, zoneToInstrument(zonez.get(1)));
+      songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize, zoneToInstrument(zonez[2]));
     }
 
     if(saxSize != 0) {
-      songGenerator.initSax(saxNrNotes,saxPitches,saxLength,(double)saxSize/maxSize, zoneToInstrument(zonez.get(2)));
+      songGenerator.initSax(saxNrNotes,saxPitches,saxLength,(double)saxSize/maxSize, zoneToInstrument(zonez[3]));
     }
   }
 

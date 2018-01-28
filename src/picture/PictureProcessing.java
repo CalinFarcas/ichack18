@@ -23,7 +23,7 @@ public class PictureProcessing {
       analyzer.initGlobalVariants(songGenerator);
       analyzer.initInstruments(songGenerator);
 
-      Score score = songGenerator.generateSong(32);
+      Score score = songGenerator.generateSong(24);
       Play.midi(score);
       Picture savedPicture = createPicture(picture.getWidth(), picture.getHeight());
 
