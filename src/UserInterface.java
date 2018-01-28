@@ -41,7 +41,7 @@ public class UserInterface extends JFrame{
 
   public UserInterface() {
     setTitle("PICTURE THEMESONG GENERATOR!!!");
-    setSize(600, 200);
+    setSize(600, 100);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.panel = new JPanel();
     getContentPane().add(panel);
