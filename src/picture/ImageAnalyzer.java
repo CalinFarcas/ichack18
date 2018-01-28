@@ -35,7 +35,7 @@ public class ImageAnalyzer {
         MyColor color = image.getPixel(i,j);
         float[] hsb = new float[3];
         Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(),hsb);
-        if(hsb[0] <= 0.7F && hsb[0] > 0.08F) {
+        if(hsb[0] <= 0.7F && hsb[0] > 0.2F) {
           ++nrHue;
         }
         if(hsb[1] > 0.5F) {
@@ -169,11 +169,14 @@ public class ImageAnalyzer {
     int drumSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
-        drumSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
         speed = (hsb[1] + hsb[2]) / 2;
+
+        if (hsb[2] < 0.6F) {
+          drumSize = zones.get(i).size();
+        }
         break;
       }
     }
@@ -358,6 +361,8 @@ public class ImageAnalyzer {
     int maxSize = max(max(drumSize,bassSize),max(guitarSize,saxSize));
     if(drumSize != 0) {
       songGenerator.initDrums(speed, (double) drumSize/maxSize);
+    } else {
+      songGenerator.setSpeed(speed);
     }
 
     if(bassSize != 0) {

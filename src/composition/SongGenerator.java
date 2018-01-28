@@ -53,6 +53,10 @@ public class SongGenerator {
     this.speed = speed;
   }
 
+  public void setSpeed(double newSpeed) {
+    this.speed = newSpeed;
+  }
+
   public Score generateSong(double duration) {
     Score score = new Score();
     score.setTempo(speed * 200);
