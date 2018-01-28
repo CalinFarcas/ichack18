@@ -3,17 +3,20 @@ package composition;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
+import jm.music.tools.Mod;
+
+import static jm.constants.ProgramChanges.BASS;
 
 public abstract class Instrument {
 
-  private final int instrument;
-  private int numNotes;
-  private int[] pitches;
-  private double[] lengths;
-  private double volume;
-  private int baseNote;
-  private Mode mode;
-  private static int channel = 0;
+  protected final int instrument;
+  protected int numNotes;
+  protected int[] pitches;
+  protected double[] lengths;
+  protected double volume;
+  protected int baseNote;
+  protected Mode mode;
+  protected static int channel = 0;
 
   protected Instrument(int instrument) {
     this.instrument = instrument;
@@ -31,11 +34,5 @@ public abstract class Instrument {
     this.mode = mode;
   }
 
-  public void addPartToScore(Score score) {
-    Part part = new Part("Instrument", instrument, channel++);
-    Phrase phrase = PhraseGenerator.generatePhrase(numNotes,
-        ScaleGenerator.scale(baseNote, mode), pitches, lengths, 4);
-    part.addPhrase(phrase);
-    score.addPart(part);
-  }
+  public  abstract void addPartToScore(Score score);
 }

@@ -353,6 +353,7 @@ public class ImageAnalyzer {
 
     if(guitarSize != 0) {
       songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize);
+      System.out.println("benis");
     }
 
     if(saxSize != 0) {
