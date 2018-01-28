@@ -12,26 +12,32 @@ public class PictureProcessing {
 
   public static void saveZones(String source) {
 
-    Picture picture = loadPicture(source);
+    try {
+      Picture picture = loadPicture(source);
+      ImageAnalyzer analyzer = new ImageAnalyzer(picture);
 
-    ImageAnalyzer analyzer = new ImageAnalyzer(picture);
+      analyzer.createAllZones();
 
-    analyzer.createAllZones();
-    SongGenerator songGenerator = new SongGenerator();
-    analyzer.initGlobalVariants(songGenerator);
-    analyzer.initInstruments(songGenerator);
+      analyzer.createAllZones();
+      SongGenerator songGenerator = new SongGenerator();
+      analyzer.initGlobalVariants(songGenerator);
+      analyzer.initInstruments(songGenerator);
 
-    Score score = songGenerator.generateSong();
-    Play.midi(score);
+      Score score = songGenerator.generateSong();
+      Play.midi(score);
+      Picture savedPicture = createPicture(picture.getWidth(), picture.getHeight());
 
-    Picture savedPicture = createPicture(picture.getWidth(), picture.getHeight());
-
-    for (Zone zone : analyzer.getZones()) {
-      for (Coords coords : zone.getCoordsList()) {
-        savedPicture.setPixel(coords.getX(), coords.getY(), zone.getAvgMyColor());
+      for (Zone zone : analyzer.getZones()) {
+        for (Coords coords : zone.getCoordsList()) {
+          savedPicture.setPixel(coords.getX(), coords.getY(), zone.getAvgMyColor());
+        }
       }
+
+      savePicture(savedPicture, "testpics/generatedZones.png");
+
+    } catch (NullPointerException e) {
+      System.out.println("null picture, try again");
     }
 
-    savePicture(savedPicture, "testpics/generatedZones.png");
   }
 }
