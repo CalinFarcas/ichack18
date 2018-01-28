@@ -10,7 +10,7 @@ import static jm.constants.Pitches.REST;
 
 public class DrumMachine {
 
-  public void addPartToScore(Score score) {
+  public void addPartToScore(Score score, double duration) {
     // drums
     Part kickPart = new Part("Kick", 0, 9);
     Part snarePart = new Part("Snare", 1, 9);
@@ -44,9 +44,9 @@ public class DrumMachine {
     snarePart.addPhrase(snarePhrase);
     hatsPart.addPhrase(hatsPhrase);
 
-    Mod.repeat(kickPart, 12);
-    Mod.repeat(snarePart, 12);
-    Mod.repeat(hatsPart, 12);
+    Mod.repeat(kickPart, (int) (duration / 4));
+    Mod.repeat(snarePart, (int) (duration / 4));
+    Mod.repeat(hatsPart, (int) (duration / 4));
 
     score.addPart(kickPart);
     score.addPart(snarePart);

@@ -34,5 +34,5 @@ public abstract class Instrument {
     this.mode = mode;
   }
 
-  public  abstract void addPartToScore(Score score);
+  public  abstract void addPartToScore(Score score, double duration);
 }

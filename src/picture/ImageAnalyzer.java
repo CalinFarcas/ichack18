@@ -26,31 +26,37 @@ public class ImageAnalyzer {
   }
 
   public void initGlobalVariants(SongGenerator songGenerator) {
-    int nrHue = 0;
-    int nrSat = 0;
-    int nrLight  = 0;
+    long nrHue = 0;
+    long nrSat = 0;
+    long nrLight  = 0;
     float avgSat = 0;
     for (int i = 0; i < image.getWidth(); i++) {
       for (int j = 0; j < image.getHeight(); j++) {
         MyColor color = image.getPixel(i,j);
         float[] hsb = new float[3];
         Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(),hsb);
-        if(hsb[0] <= 1/3 && hsb[0] > 5/6) {
+        if(hsb[0] <= 0.7F && hsb[0] > 0.08F) {
           ++nrHue;
         }
-        if(hsb[1] > 0.5) {
+        if(hsb[1] > 0.5F) {
           ++nrSat;
         }
-        if(hsb[2] > 0.5) {
+        if(hsb[2] > 0.5F) {
           ++nrLight;
         }
         avgSat+=hsb[1];
       }
     }
+
+    System.out.println(nrHue);
+    System.out.println(nrSat);
+    System.out.println(nrLight);
+
     int nrPixels = image.getHeight()*image.getWidth();
     avgSat /= nrPixels;
-    double mod = sqrt(cbrt(nrHue * nrSat * nrLight)/nrPixels);
-    songGenerator.initGeneralParameters((int)avgSat*11 + 48, Mode.values()[(int)(mod*7)]);
+    double mod = sqrt(cbrt((double) (nrHue * nrSat * nrLight))/ (double) nrPixels);
+    System.out.println(mod);
+    songGenerator.initGeneralParameters((int)avgSat*11 + 60, Mode.values()[Math.min(6, (int)(mod*8))]);
   }
 
   private Zone createZone(Coords startCoords) {
@@ -156,6 +162,7 @@ public class ImageAnalyzer {
   }
 
   public void initInstruments(SongGenerator songGenerator) {
+    List<Zone> zonez = new ArrayList<>();
     zones.sort((x, y) -> (int) (y.getConsistency() - x.getConsistency()));
     int i = 0;
     double speed = 0;
@@ -166,7 +173,7 @@ public class ImageAnalyzer {
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
         Color.RGBtoHSB(avgColor.getRed(), avgColor.getGreen(), avgColor.getBlue(), hsb);
-        speed = hsb[0];
+        speed = (hsb[1] + hsb[2]) / 2;
         break;
       }
     }
@@ -179,6 +186,8 @@ public class ImageAnalyzer {
     int bassSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
+        zonez.add(zones.get(i));
+
         bassSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
@@ -225,6 +234,8 @@ public class ImageAnalyzer {
     int guitarSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size() >= MIN_ZONE_SIZE) {
+        zonez.add(zones.get(i));
+
         guitarSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
@@ -287,6 +298,8 @@ public class ImageAnalyzer {
     int saxSize = 0;
     for(; i < zones.size(); ++i) {
       if(zones.get(i).size()>= MIN_ZONE_SIZE) {
+        zonez.add(zones.get(i));
+
         saxSize = zones.get(i).size();
         MyColor avgColor = zones.get(i).getAvgMyColor();
         float[] hsb = new float[3];
@@ -348,17 +361,21 @@ public class ImageAnalyzer {
     }
 
     if(bassSize != 0) {
-      songGenerator.initBass(bassNrNotes,bassPitches,bassLength,(double)bassSize/maxSize);
+      songGenerator.initBass(bassNrNotes,bassPitches,bassLength,(double)bassSize/maxSize, zoneToInstrument(zonez.get(0)));
     }
 
     if(guitarSize != 0) {
-      songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize);
-      System.out.println("benis");
+      songGenerator.initGuitar(guitarNrNotes,guitarPitches,guitarLength,(double)guitarSize/maxSize, zoneToInstrument(zonez.get(1)));
     }
 
     if(saxSize != 0) {
-      songGenerator.initSax(saxNrNotes,saxPitches,saxLength,(double)saxSize/maxSize);
+      songGenerator.initSax(saxNrNotes,saxPitches,saxLength,(double)saxSize/maxSize, zoneToInstrument(zonez.get(2)));
     }
+  }
+
+  private int zoneToInstrument(Zone zone) {
+    MyColor avgCol = zone.getAvgMyColor();
+    return (int) (Color.RGBtoHSB(avgCol.getRed(), avgCol.getGreen(), avgCol.getBlue(), null)[0] * 127);
   }
 
   public void printArray() {

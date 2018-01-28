@@ -5,9 +5,9 @@ import jm.music.data.Score;
 public class SongGenerator {
 
   private double speed;
-  private final Instrument guitarInstrument;
-  private final Instrument bassInstrument;
-  private final Instrument saxInstrument;
+  private Instrument guitarInstrument;
+  private Instrument bassInstrument;
+  private Instrument saxInstrument;
   private final DrumMachine drumMachine;
   private boolean isGuitar;
   private boolean isBass;
@@ -18,30 +18,31 @@ public class SongGenerator {
 
   public SongGenerator() {
     speed = 120;
-    guitarInstrument = new GuitarInstrument();
-    bassInstrument = new BassInstrument();
-    saxInstrument = new SaxInstrument();
     drumMachine = new DrumMachine();
   }
 
   public void initGeneralParameters(int baseNote, Mode mode) {
     this.baseNote = baseNote;
     this.mode = mode;
+    System.out.println(mode.toString());
   }
 
-  public void initGuitar(int numNotes, int[] pitches, double[] lengths, double volume) {
+  public void initGuitar(int numNotes, int[] pitches, double[] lengths, double volume, int instrument) {
+    guitarInstrument = new GuitarInstrument(instrument);
     isGuitar = true;
     guitarInstrument.setParameters(numNotes, pitches, lengths, volume);
     guitarInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
-  public void initBass(int numNotes, int[] pitches, double[] lengths, double volume) {
+  public void initBass(int numNotes, int[] pitches, double[] lengths, double volume, int instrument) {
+    bassInstrument = new BassInstrument(instrument);
     isBass = true;
     bassInstrument.setParameters(numNotes, pitches, lengths, volume);
     bassInstrument.setBaseNoteAndMode(baseNote, mode);
   }
 
-  public void initSax(int numNotes, int[] pitches, double[] lengths, double volume) {
+  public void initSax(int numNotes, int[] pitches, double[] lengths, double volume, int instrument) {
+    saxInstrument = new SaxInstrument(instrument);
     isSax = true;
     saxInstrument.setParameters(numNotes, pitches, lengths, volume);
     saxInstrument.setBaseNoteAndMode(baseNote, mode);
@@ -52,24 +53,24 @@ public class SongGenerator {
     this.speed = speed;
   }
 
-  public Score generateSong() {
+  public Score generateSong(double duration) {
     Score score = new Score();
-    score.setTempo(speed * 400);
+    score.setTempo(speed * 200);
 
     if (isDrums) {
-      drumMachine.addPartToScore(score);
+      drumMachine.addPartToScore(score, duration);
     }
 
     if (isGuitar) {
-      guitarInstrument.addPartToScore(score);
+      guitarInstrument.addPartToScore(score, duration);
     }
 
     if (isBass) {
-      bassInstrument.addPartToScore(score);
+      bassInstrument.addPartToScore(score, duration);
     }
 
     if (isSax) {
-      saxInstrument.addPartToScore(score);
+      saxInstrument.addPartToScore(score, duration);
     }
 
     return score;
