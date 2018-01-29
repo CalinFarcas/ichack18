@@ -6,8 +6,8 @@ import static picture.PictureProcessing.saveZones;;
 
 public class UserInterface extends JFrame{
   private JTextField pasteSourcePathOrTextField;
-  private JButton generateColourZonesButton;
-  private JButton generateSongButton;
+  private JButton firstButton;
+  private JButton secondButton;
   private JPanel panel;
 
   private class ButtonPressListener implements ActionListener {
@@ -50,17 +50,17 @@ public class UserInterface extends JFrame{
     pasteSourcePathOrTextField.setColumns(20);
     panel.add(pasteSourcePathOrTextField);
 
-    generateColourZonesButton = new JButton();
-    generateColourZonesButton.setText("Generate Colour Zones");
-    generateColourZonesButton.setSize(100, 50);
-    generateColourZonesButton.addActionListener(new ButtonPressListener(pasteSourcePathOrTextField));
-    panel.add(generateColourZonesButton);
+    firstButton = new JButton();
+    firstButton.setText("Generate Song");
+    firstButton.setSize(100, 50);
+    firstButton.addActionListener(new ButtonPressListener(pasteSourcePathOrTextField));
+    panel.add(firstButton);
 
-    generateSongButton = new JButton();
-    generateSongButton.setText("Generate Song");
-    generateSongButton.setSize(100, 50);
-    generateSongButton.addActionListener(new ButtonPressListener());
-    panel.add(generateSongButton);
+    secondButton = new JButton();
+    secondButton.setText("Extra button???");
+    secondButton.setSize(100, 50);
+    secondButton.addActionListener(new ButtonPressListener());
+    panel.add(secondButton);
 
     setVisible(true);
   }
