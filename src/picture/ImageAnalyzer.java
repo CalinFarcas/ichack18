@@ -35,7 +35,7 @@ public class ImageAnalyzer {
         MyColor color = image.getPixel(i,j);
         float[] hsb = new float[3];
         Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(),hsb);
-        if(hsb[0] <= 0.7F && hsb[0] > 0.2F) {
+        if(hsb[0] <= 0.33F || hsb[0] > 0.8F) {
           ++nrHue;
         }
         if(hsb[1] > 0.5F) {
@@ -48,14 +48,9 @@ public class ImageAnalyzer {
       }
     }
 
-    System.out.println(nrHue);
-    System.out.println(nrSat);
-    System.out.println(nrLight);
-
     int nrPixels = image.getHeight()*image.getWidth();
     avgSat /= nrPixels;
     double mod = sqrt(cbrt((double) (nrHue * nrSat * nrLight))/ (double) nrPixels);
-    System.out.println(mod);
     songGenerator.initGeneralParameters((int)avgSat*11 + 60, Mode.values()[Math.min(6, (int)(mod*7))]);
   }
 
